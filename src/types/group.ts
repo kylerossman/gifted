@@ -1,32 +1,12 @@
 /**
- * Group interface for organizing gifts by person or event
+ * Temporary dashboard card projection, not a backend resource.
+ * Replace this with Event and Person sections during the dashboard redesign.
  */
 export interface Group {
   id: string;
   name: string;
-  description?: string;
   groupType: 'person' | 'event';
-  eventDate?: Date; // For event-based groups (e.g., Christmas, Birthday)
-  personName?: string; // For person-based groups (e.g., significant other)
-  color?: string; // Hex color for UI display
-  createdAt: Date;
-  updatedAt: Date;
-  giftCount?: number; // Number of gifts in this group
-}
-
-export interface CreateGroupDto {
-  name: string;
-  description?: string;
-  groupType: 'person' | 'event';
-  eventDate?: Date;
+  eventDate?: string;
   personName?: string;
-  color?: string;
-}
-
-export interface UpdateGroupDto {
-  name?: string;
-  description?: string;
-  eventDate?: Date;
-  personName?: string;
-  color?: string;
+  giftCount: number;
 }

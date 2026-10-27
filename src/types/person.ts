@@ -1,11 +1,17 @@
-/**
- * Best-guess frontend model for a person managed by the backend.
- * Adjust this shape when the Spring API contract is established.
- */
+/** Person resource as represented in JSON. Timestamps remain ISO strings. */
 export interface Person {
   id: string;
-  name: string;
-  description?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  firstName: string;
+  lastName: string;
+  notes?: string;
+  imageUrl?: string;
+  createdAt: string;
+  updatedAt: string;
 }
+
+/** Fields the client sends when creating a person. */
+export type CreatePersonDto = Pick<Person, 'firstName' | 'lastName'> &
+  Partial<Pick<Person, 'notes' | 'imageUrl'>>;
+
+/** Partial update payload; omitted fields are left unchanged. */
+export type UpdatePersonDto = Partial<CreatePersonDto>;

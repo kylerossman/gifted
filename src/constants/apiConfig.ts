@@ -13,23 +13,22 @@ export const API_BASE_URL =
 // opt into the guessed REST contract; request failures are then shown as errors.
 export const DATA_SOURCE_MODE = process.env.EXPO_PUBLIC_DATA_SOURCE === 'rest' ? 'rest' : 'mock';
 
-// API Endpoints
+// Provisional REST paths aligned with docs/api-contract-draft.md.
 export const API_ENDPOINTS = {
-  // Gift endpoints
-  gifts: '/api/gifts',
-  giftById: (id: string) => `/api/gifts/${id}`,
-  
-  // Group endpoints
-  groups: '/api/groups',
-  groupById: (id: string) => `/api/groups/${id}`,
-  groupGifts: (groupId: string) => `/api/groups/${groupId}/gifts`,
+  events: '/api/events',
+  eventById: (id: string) => `/api/events/${id}`,
 
-  // Best-guess people endpoint; confirm when the Spring API is designed.
   people: '/api/people',
-  
+  personById: (id: string) => `/api/people/${id}`,
+  personEvents: (personId: string) => `/api/people/${personId}/events`,
+  personGiftIdeas: (personId: string) => `/api/people/${personId}/gift-ideas`,
+
+  giftIdeas: '/api/gift-ideas',
+  giftIdeaById: (id: string) => `/api/gift-ideas/${id}`,
+
   // Amazon link parsing (optional - if backend provides this)
   parseAmazonLink: '/api/amazon/parse',
-  
+
   // Auth endpoints (if needed)
   login: '/api/auth/login',
   logout: '/api/auth/logout',

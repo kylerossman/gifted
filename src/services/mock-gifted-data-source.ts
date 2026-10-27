@@ -1,85 +1,135 @@
-import type { Gift } from '@/types/gift';
+import type { Event } from '@/types/event';
+import type { GiftIdea } from '@/types/gift';
 import type { Group } from '@/types/group';
 import type { Person } from '@/types/person';
 
 import type { GiftedDataSource } from './gifted-data-source';
 
-const now = new Date();
+const now = '2026-10-22T14:30:00Z';
 
-const groups: Group[] = [
+const events: Event[] = [
   {
-    id: 'group-christmas-2026',
+    id: '3f77a2fa-f293-4d6b-9855-087f969a2b15',
     name: 'Christmas 2026',
-    groupType: 'event',
-    eventDate: new Date('2026-12-25T00:00:00'),
+    targetDate: '2026-12-25',
+    budget: { amountMinor: 50000, currency: 'USD' },
+    participants: [
+      {
+        personId: '2e58b6d0-487a-4b2a-a6a1-543aa14c0c42',
+        personalBudget: { amountMinor: 10000, currency: 'USD' },
+      },
+      {
+        personId: 'e341baaf-c82d-41fa-97d6-1b851cf4938e',
+        personalBudget: { amountMinor: 10000, currency: 'USD' },
+      },
+    ],
     createdAt: now,
     updatedAt: now,
-    giftCount: 2,
   },
   {
-    id: 'group-sarah',
-    name: 'Sarah',
-    groupType: 'person',
-    personName: 'Sarah',
-    createdAt: now,
-    updatedAt: now,
-    giftCount: 1,
-  },
-  {
-    id: 'group-mom-birthday',
+    id: 'a83aacdb-78a0-40b3-b8a2-bda8d2af03e9',
     name: "Mom's Birthday",
-    groupType: 'event',
-    eventDate: new Date('2027-05-10T00:00:00'),
+    targetDate: '2027-05-10',
+    participants: [{ personId: 'e341baaf-c82d-41fa-97d6-1b851cf4938e' }],
     createdAt: now,
     updatedAt: now,
-    giftCount: 1,
   },
 ];
 
 const people: Person[] = [
-  { id: 'person-sarah', name: 'Sarah', createdAt: now, updatedAt: now },
-  { id: 'person-mom', name: 'Mom', createdAt: now, updatedAt: now },
+  {
+    id: '2e58b6d0-487a-4b2a-a6a1-543aa14c0c42',
+    firstName: 'Sarah',
+    lastName: 'Lee',
+    notes: 'Likes hiking and science fiction.',
+    imageUrl: 'https://example.com/images/sarah.jpg',
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: 'e341baaf-c82d-41fa-97d6-1b851cf4938e',
+    firstName: 'Mom',
+    lastName: 'Lee',
+    notes: 'Enjoys gardening.',
+    createdAt: now,
+    updatedAt: now,
+  },
 ];
 
-const gifts: Gift[] = [
+const giftIdeas: GiftIdea[] = [
   {
-    id: 'gift-1',
-    title: 'Warm winter scarf',
-    groupId: 'group-christmas-2026',
+    id: '8ccaa0bc-8bbf-490d-a810-aaae26f87ff6',
+    personId: '2e58b6d0-487a-4b2a-a6a1-543aa14c0c42',
+    eventId: '3f77a2fa-f293-4d6b-9855-087f969a2b15',
+    label: 'Warm winter scarf',
+    type: 'FREE_TEXT',
+    status: 'ACTIVE',
     createdAt: now,
     updatedAt: now,
   },
   {
-    id: 'gift-2',
-    title: 'Favorite board game',
-    groupId: 'group-christmas-2026',
+    id: '0b0851a3-4891-4d80-9373-2763a8243f3d',
+    personId: 'e341baaf-c82d-41fa-97d6-1b851cf4938e',
+    eventId: '3f77a2fa-f293-4d6b-9855-087f969a2b15',
+    label: 'Favorite board game',
+    type: 'WEBSITE',
+    url: 'https://example.com/board-game',
+    price: { amountMinor: 3499, currency: 'USD' },
+    status: 'ACTIVE',
     createdAt: now,
     updatedAt: now,
   },
   {
-    id: 'gift-3',
-    title: 'Concert tickets',
-    groupId: 'group-sarah',
+    id: 'd8b6f6b9-a6ab-4673-8f4a-b5e35dc525c1',
+    personId: '2e58b6d0-487a-4b2a-a6a1-543aa14c0c42',
+    label: 'Concert tickets',
+    type: 'FREE_TEXT',
+    status: 'ACTIVE',
     createdAt: now,
     updatedAt: now,
   },
   {
-    id: 'gift-4',
-    title: 'Garden tools',
-    groupId: 'group-mom-birthday',
+    id: '19b940d5-cb95-4522-9bf3-898a008d8be1',
+    personId: 'e341baaf-c82d-41fa-97d6-1b851cf4938e',
+    eventId: 'a83aacdb-78a0-40b3-b8a2-bda8d2af03e9',
+    label: 'Garden tools',
+    type: 'AMAZON',
+    url: 'https://www.amazon.com/dp/example',
+    price: { amountMinor: 4999, currency: 'USD' },
+    status: 'ACTIVE',
     createdAt: now,
     updatedAt: now,
   },
+];
+
+const groups: Group[] = [
+  ...events.map((event) => ({
+    id: event.id,
+    name: event.name,
+    groupType: 'event' as const,
+    eventDate: event.targetDate,
+    giftCount: giftIdeas.filter((gift) => gift.eventId === event.id).length,
+  })),
+  ...people.map((person) => ({
+    id: person.id,
+    name: `${person.firstName} ${person.lastName}`,
+    groupType: 'person' as const,
+    personName: person.firstName,
+    giftCount: giftIdeas.filter((gift) => gift.personId === person.id).length,
+  })),
 ];
 
 export const mockGiftedDataSource: GiftedDataSource = {
+  async getEvents() {
+    return events;
+  },
   async getGroups() {
     return groups;
   },
   async getPeople() {
     return people;
   },
-  async getGifts() {
-    return gifts;
+  async getGiftIdeas() {
+    return giftIdeas;
   },
 };

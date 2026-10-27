@@ -1,35 +1,35 @@
- /**
- * Gift interface representing a gift idea
- */
-export interface Gift {
+import type { Money } from './money';
+
+export type GiftIdeaType = 'WEBSITE' | 'AMAZON' | 'FREE_TEXT';
+export type GiftIdeaStatus = 'ACTIVE' | 'BOUGHT' | 'ARCHIVED';
+
+/** Gift idea resource as represented in JSON, including ISO date strings. */
+export interface GiftIdea {
   id: string;
-  title: string;
+  personId: string;
+  eventId?: string;
+  label: string;
+  type: GiftIdeaType;
   description?: string;
-  price?: number;
-  amazonLink?: string;
-  amazonData?: {
-    title?: string;
-    price?: number;
-    image?: string;
-  };
-  groupId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  status?: 'active' | 'purchased' | 'archived';
+  url?: string;
+  imageUrl?: string;
+  price?: Money;
+  status: GiftIdeaStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface CreateGiftDto {
-  title: string;
-  description?: string;
-  price?: number;
-  amazonLink?: string;
-  groupId: string;
-}
+/** Fields the client sends when creating a gift idea; the server assigns identity/timestamps. */
+export type CreateGiftIdeaDto = Omit<GiftIdea, 'id' | 'createdAt' | 'updatedAt' | 'status'> & {
+  status?: GiftIdeaStatus;
+};
 
-export interface UpdateGiftDto {
-  title?: string;
-  description?: string;
-  price?: number;
-  amazonLink?: string;
-  status?: 'active' | 'purchased' | 'archived';
-}
+/** Partial update payload; omitted fields are left unchanged. */
+export type UpdateGiftIdeaDto = Partial<CreateGiftIdeaDto>;
+
+/** @deprecated Use GiftIdea; retained temporarily for callers being migrated. */
+export type Gift = GiftIdea;
+/** @deprecated Use CreateGiftIdeaDto. */
+export type CreateGiftDto = CreateGiftIdeaDto;
+/** @deprecated Use UpdateGiftIdeaDto. */
+export type UpdateGiftDto = UpdateGiftIdeaDto;
