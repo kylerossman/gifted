@@ -2,7 +2,7 @@
 
 This document is an app-first proposal for the Gifted data model and REST API. It is intended to be the baseline that the frontend and Java/Spring backend can implement together. It is deliberately a set of examples and conventions, not a formal JSON Schema. Revise it as implementation reveals better choices.
 
-The paths below are proposed. The frontend currently has provisional `GET /api/groups`, `GET /api/people`, and `GET /api/gifts` calls; the more specific event/person/gift-idea API described here will require updating the frontend data-source implementation when the backend contract is settled.
+The paths below are proposed. The dashboard reads people and events from their collection endpoints; gift ideas are a separate resource collection and are associated with people and optionally events by ID.
 
 ## Conventions to start with
 
@@ -18,6 +18,52 @@ The paths below are proposed. The frontend currently has provisional `GET /api/g
 - Treat these examples as unauthenticated development requests. Add authentication and authorization rules when those requirements are known.
 
 ## Resource shapes
+
+### User profile
+
+A user profile represents the authenticated account owner. Keep this safe profile resource separate from authentication credentials: profile responses must never contain a password or password hash.
+
+```json
+{
+  "id": "672a9b5b-8357-4575-9d8b-7ca732f4c1be",
+  "firstName": "Jordan",
+  "lastName": "Taylor",
+  "email": "jordan@example.com",
+  "phoneNumber": "+14155552671",
+  "imageUrl": "https://example.com/images/jordan.jpg",
+  "friendIds": [],
+  "createdAt": "2026-10-22T14:30:00Z",
+  "updatedAt": "2026-10-22T14:30:00Z"
+}
+```
+
+Use `phoneNumber` as a string (preferably normalized to E.164) so a leading `+` and zeroes are preserved. Use `imageUrl` as a remote reference; upload image bytes through a separate upload flow rather than putting a blob or base64 value in profile JSON. Responses should include `friendIds: []` when there are no connected users.
+
+`friendIds` refers only to other `User` account IDs connected to this account. It is not a list of the `Person` records this user created to track gift ideas: a `Person` is a private address-book-like record, while a connected user is an account. Friend invitation, acceptance, and removal should be separate relationship operations; do not allow arbitrary profile updates to write another user's ID into this list.
+
+Email is a string in the JSON model. The server should validate a reasonable email syntax and uniqueness, and verify ownership as part of account registration or email changes. Avoid relying on a strict client-side regex as proof that an address is valid or deliverable.
+
+The password is not part of `UserProfile`, `RegisterUserDto` responses, or `UpdateUserProfileDto`. It may appear only in an authentication request such as account registration or login. Send credentials only over HTTPS, hash passwords on the server with a modern password-hashing algorithm (for example Argon2id), never store or log plaintext passwords, and never return the password or hash. Production authentication/session design is not implemented by this profile type.
+
+The proposed authenticated profile operations are:
+
+- `GET /api/auth/profile` returns the current user's safe profile.
+- `PATCH /api/auth/profile` updates editable profile fields; friend connections remain separate.
+- `POST /api/auth/register` accepts registration fields plus a password and returns only the safe profile (or an authentication/session response that contains that profile).
+
+Example registration request (the response must not echo `password`):
+
+```json
+{
+  "firstName": "Jordan",
+  "lastName": "Taylor",
+  "email": "jordan@example.com",
+  "phoneNumber": "+14155552671",
+  "password": "<sent securely; never returned>"
+}
+```
+
+### Person
 
 ### Person
 
@@ -64,7 +110,7 @@ An event has a target date and optional overall budget. Participants associate p
 }
 ```
 
-`budget`, `personalBudget`, and `participants` can be omitted if not set; a response should return `participants: []` when there are no participants. Decide whether event budgets are required before finalizing validation rules.
+`budget` and `personalBudget` can be omitted if not set. A create request may omit `participants`, but event responses should always include `participants: []` when there are no participants. Decide whether event budgets are required before finalizing validation rules.
 
 ### Gift idea
 
@@ -253,3 +299,5 @@ curl -i -X PATCH "$API_BASE_URL/api/gift-ideas/8ccaa0bc-8bbf-490d-a810-aaae26f87
 5. Should notes have a maximum length? Should people allow a missing first or last name?
 6. Are collection endpoints paginated, and will the app have multiple users/authentication?
 7. Should dashboard data use separate collection requests or one aggregate request?
+8. What authentication/session mechanism and registration verification flow will be used?
+9. What friend connection lifecycle/endpoints are required (invitation, acceptance, removal), and how should privacy of a user's created `Person` records work?

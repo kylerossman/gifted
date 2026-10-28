@@ -41,7 +41,7 @@ export default function TabTwoScreen() {
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="subtitle">Explore</ThemedText>
           <ThemedText style={styles.centerText} themeColor="textSecondary">
-            This starter app includes example{'\n'}code to help you get started.
+            This starter app includes example{ '\n' }code to help you get started.
           </ThemedText>
 
           <ExternalLink href="https://docs.expo.dev" asChild>
@@ -61,12 +61,9 @@ export default function TabTwoScreen() {
         <ThemedView style={styles.sectionsWrapper}>
           <Collapsible title="File-based routing">
             <ThemedText type="small">
-              This app has two screens: <ThemedText type="code">src/app/index.tsx</ThemedText> and{' '}
-              <ThemedText type="code">src/app/explore.tsx</ThemedText>
-            </ThemedText>
-            <ThemedText type="small">
-              The layout file in <ThemedText type="code">src/app/_layout.tsx</ThemedText> sets up
-              the tab navigator.
+              This app has a home screen and an Explore screen inside the tab navigator. The layout
+              file in <ThemedText type="code">src/app/(tabs)/_layout.tsx</ThemedText> sets up the
+              tabs.
             </ThemedText>
             <ExternalLink href="https://docs.expo.dev/router/introduction">
               <ThemedText type="linkPrimary">Learn more</ThemedText>
@@ -76,9 +73,8 @@ export default function TabTwoScreen() {
           <Collapsible title="Android, iOS, and web support">
             <ThemedView type="backgroundElement" style={styles.collapsibleContent}>
               <ThemedText type="small">
-                You can open this project on Android, iOS, and the web. To open the web version,
-                press <ThemedText type="smallBold">w</ThemedText> in the terminal running this
-                project.
+                This app supports Android, iOS, and web. Start the Expo development server and open
+                the web version to preview it in a browser.
               </ThemedText>
               <Image
                 source={require('@/assets/images/tutorial-web.png')}
@@ -89,9 +85,7 @@ export default function TabTwoScreen() {
 
           <Collapsible title="Images">
             <ThemedText type="small">
-              For static images, you can use the <ThemedText type="code">@2x</ThemedText> and{' '}
-              <ThemedText type="code">@3x</ThemedText> suffixes to provide files for different
-              screen densities.
+              The app uses Expo Image for remote and bundled images.
             </ThemedText>
             <Image source={require('@/assets/images/react-logo.png')} style={styles.imageReact} />
             <ExternalLink href="https://reactnative.dev/docs/images">
@@ -101,9 +95,7 @@ export default function TabTwoScreen() {
 
           <Collapsible title="Light and dark mode components">
             <ThemedText type="small">
-              This template has light and dark mode support. The{' '}
-              <ThemedText type="code">useColorScheme()</ThemedText> hook lets you inspect what the
-              user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
+              The theme hooks and themed components adapt to the system appearance.
             </ThemedText>
             <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
               <ThemedText type="linkPrimary">Learn more</ThemedText>
@@ -112,10 +104,7 @@ export default function TabTwoScreen() {
 
           <Collapsible title="Animations">
             <ThemedText type="small">
-              This template includes an example of an animated component. The{' '}
-              <ThemedText type="code">src/components/ui/collapsible.tsx</ThemedText> component uses
-              the powerful <ThemedText type="code">react-native-reanimated</ThemedText> library to
-              animate opening this hint.
+              This template includes the React Native Reanimated library for animations.
             </ThemedText>
           </Collapsible>
         </ThemedView>
@@ -126,29 +115,17 @@ export default function TabTwoScreen() {
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-  },
-  contentContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  container: {
-    maxWidth: MaxContentWidth,
-    flexGrow: 1,
-  },
+  scrollView: { flex: 1 },
+  contentContainer: { flexDirection: 'row', justifyContent: 'center' },
+  container: { maxWidth: MaxContentWidth, flexGrow: 1 },
   titleContainer: {
     gap: Spacing.three,
     alignItems: 'center',
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.six,
   },
-  centerText: {
-    textAlign: 'center',
-  },
-  pressed: {
-    opacity: 0.7,
-  },
+  centerText: { textAlign: 'center' },
+  pressed: { opacity: 0.7 },
   linkButton: {
     flexDirection: 'row',
     paddingHorizontal: Spacing.four,
@@ -163,18 +140,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingTop: Spacing.three,
   },
-  collapsibleContent: {
-    alignItems: 'center',
-  },
+  collapsibleContent: { alignItems: 'center' },
   imageTutorial: {
     width: '100%',
     aspectRatio: 296 / 171,
     borderRadius: Spacing.three,
     marginTop: Spacing.two,
   },
-  imageReact: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
-  },
+  imageReact: { width: 100, height: 100, alignSelf: 'center' },
 });

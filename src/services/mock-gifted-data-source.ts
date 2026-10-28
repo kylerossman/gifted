@@ -1,6 +1,5 @@
 import type { Event } from '@/types/event';
 import type { GiftIdea } from '@/types/gift';
-import type { Group } from '@/types/group';
 import type { Person } from '@/types/person';
 
 import type { GiftedDataSource } from './gifted-data-source';
@@ -39,8 +38,8 @@ const events: Event[] = [
 const people: Person[] = [
   {
     id: '2e58b6d0-487a-4b2a-a6a1-543aa14c0c42',
-    firstName: 'Sarah',
-    lastName: 'Lee',
+    firstName: 'Molly',
+    lastName: 'Goodykoontz',
     notes: 'Likes hiking and science fiction.',
     imageUrl: 'https://example.com/images/sarah.jpg',
     createdAt: now,
@@ -49,7 +48,7 @@ const people: Person[] = [
   {
     id: 'e341baaf-c82d-41fa-97d6-1b851cf4938e',
     firstName: 'Mom',
-    lastName: 'Lee',
+    lastName: 'Rossman',
     notes: 'Enjoys gardening.',
     createdAt: now,
     updatedAt: now,
@@ -102,34 +101,17 @@ const giftIdeas: GiftIdea[] = [
   },
 ];
 
-const groups: Group[] = [
-  ...events.map((event) => ({
-    id: event.id,
-    name: event.name,
-    groupType: 'event' as const,
-    eventDate: event.targetDate,
-    giftCount: giftIdeas.filter((gift) => gift.eventId === event.id).length,
-  })),
-  ...people.map((person) => ({
-    id: person.id,
-    name: `${person.firstName} ${person.lastName}`,
-    groupType: 'person' as const,
-    personName: person.firstName,
-    giftCount: giftIdeas.filter((gift) => gift.personId === person.id).length,
-  })),
-];
-
 export const mockGiftedDataSource: GiftedDataSource = {
   async getEvents() {
     return events;
-  },
-  async getGroups() {
-    return groups;
   },
   async getPeople() {
     return people;
   },
   async getGiftIdeas() {
     return giftIdeas;
+  },
+  async getPersonGiftIdeas(personId: string) {
+    return giftIdeas.filter((giftIdea) => giftIdea.personId === personId);
   },
 };
